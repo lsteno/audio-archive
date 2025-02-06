@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}404{% endblock %} 
+{% block content %} 
+<div class="row">
+    <div class="col-12 errorTitle">
+        <h1 class="errorType">ERROR 404</h1>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12 errorTitle">
+        <h2>There is nothing here</h2>       
+    </div>
+</div>
+<div class="row">
+    <div class="col-12 errorTitle">
+        <button class="btn btn-secondary"><a href="{{ url_for('index') }}" class="errorLink">go back home</a></button>      
+    </div>
+</div>
+<div class="row">
+    <div class="col-12 errorTitle">
+        <img src="{{ url_for('static', filename='404.png') }}" alt="404 error image" class="errorImg">
+    </div>
+</div>
+{% endblock %} 

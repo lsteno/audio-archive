@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}user{% endblock %}
+{% block css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/podcast.css') }}">{% endblock %}
+{% block content %}
+<section class="userData">
+    <h1>Personal page</h1>
+    <img src="{{ url_for('static', filename=current_user.profilepic)}}" alt="current user profile picture" class="userProfilePic">
+    <ul class="dataList">
+        <li class="dataListElement">Name: {{current_user.name}}</li>
+        <li class="dataListElement">Surname: {{current_user.surname}}</li>
+        <li class="dataListElement">Username: {{current_user.username}}</li>
+    </ul>
+    {% if current_user.creator%}
+        <h4>you are a creator</h4>
+    {% else %}
+        <h4>you are a listener</h4>
+    {% endif %}
+</section>
+
+{% if current_user.creator%}
+<h3>Your podcasts</h3>
+<section class="userPodcasts">
+    <div class="card userPodcastsCards newPodcast" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-dismiss="offcanvas">
+        <h5 class="card-title">Create a new Podcast</h5>
+        <svg class="addNew" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+        width="50" height="50"
+        viewBox="0,0,256,256">
+        <g fill="#ffffff" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none"><g transform="scale(5.12,5.12)"><path d="M41,4h-32c-2.76,0 -5,2.24 -5,5v32c0,2.76 2.24,5 5,5h32c2.76,0 5,-2.24 5,-5v-32c0,-2.76 -2.24,-5 -5,-5zM37,26h-11v11h-2v-11h-11v-2h11v-11h2v11h11z"></path></g></g>
+        </svg>
+    </div>
+    {% if podcasts %}
+        {% for podcast in podcasts %}
+        <a class="card userPodcastsCards" aria-roledescription="{{podcast.id}}" href="{{url_for('podcast', id=podcast.id)}}">
+            <img src="{{ url_for('static', filename=podcast.cover) }}" class="card-img-top" alt="Podcast cover">
+            <h5 class="card-title">{{podcast.title}}</h5>
+        </a>
+        {% endfor %}
+    {% endif %}
+</section>
+{% endif %}
+<h3>Shows you are following</h3>
+<section class="userFollows">
+    {% if followList %}
+        {% for element in followList %}
+        <a class="card userPodcastsCards" aria-roledescription="{{element.id}}" href="{{url_for('podcast', id=element.id)}}">
+            <img src="{{ url_for('static', filename=element.cover) }}" class="card-img-top" alt="Podcast cover">
+            <h5 class="card-title">{{element.title}}</h5>
+        </a>
+        {% endfor %}
+    {% else %}
+    <h4 class="followMessage">There is nothing here... yet!</h4>
+    {% endif %}
+</section>
+{% endblock %}

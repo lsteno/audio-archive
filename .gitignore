@@ -1,0 +1,15 @@
+# Python
+*.pyc
+__pycache__/
+
+# Virtual environment
+venv/
+
+# Environment variables
+.env
+
+# Database files
+*.sqlite3
+
+# Flask session files
+flask_session/

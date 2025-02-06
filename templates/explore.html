@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}explore{% endblock %} 
+{% block content %} 
+<h1 class="categoryTitle">Explore {% if tag == 'crime' %}True crime{% else %}{{tag}}{% endif %} podcasts</h1>
+<div class="podcastsWrapper">
+    {% for podcast in podcasts %}
+        <a class="card userPodcastsCards" aria-roledescription="{{podcast.id}}" href="{{url_for('podcast', id=podcast.id)}}">
+            <img src="{{ url_for('static', filename=podcast.cover) }}" class="card-img-top" alt="Podcast cover">
+            <h5 class="card-title">{{podcast.title}}</h5>
+        </a>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>audio archive {% block title %}{% endblock %}</title>
+    <link rel="icon" type="image/x-icon" href="{{url_for('static', filename='favicon.png')}}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block css %}{% endblock %}
+    {% block js %}{% endblock %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-lg navbar-custom navbar-light">
+        <a class="navbar-brand" href="{{ url_for('index')}}">
+          <img src="{{ url_for('static', filename='/logo/logow.png') }}" class="logo">
+        </a>
+        <div class="nav-item">
+            {% if current_user.is_authenticated %}
+            <button class="userButton"  type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+                <svg class="svgOffcanvas" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+                width="50" height="50"
+                viewBox="0,0,256,256">
+                <g class="gOffcanvas" fill="#ffffff" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" ><g transform="scale(5.12,5.12)"><path d="M41,4h-32c-2.76,0 -5,2.24 -5,5v32c0,2.03 1.22,3.79 2.96,4.57c0.62,0.27 1.31,0.43 2.04,0.43h32c0.73,0 1.42,-0.16 2.04,-0.43c1.74,-0.78 2.96,-2.54 2.96,-4.57v-32c0,-2.76 -2.24,-5 -5,-5zM20.87,34.44c0.17,-1.34 0.09,-2.23 0.09,-3.49c-0.63,-0.36 -1.8,-2.41 -1.98,-4.11c-0.45,0 -1.26,-0.45 -1.44,-2.33c-0.18,-0.98 0.36,-1.52 0.63,-1.7c-1.62,-6.17 -0.72,-11.63 6.74,-11.81c1.89,0 3.33,0.54 3.78,1.52c5.48,0.72 3.86,8.05 3.05,10.38c0.27,0.18 0.72,0.72 0.63,1.7c-0.18,1.79 -0.99,2.33 -1.44,2.33c-0.18,1.79 -1.26,3.75 -1.89,4.11c0,1.17 0,2.15 0.09,3.49c1.46,3.76 10.52,2.95 11.74,9.47h-31.74c1.23,-6.52 10.37,-5.72 11.74,-9.56z"></path></g></g>
+                </svg>
+            </button>
+            {% else %}
+                <button class="btn btn-primary btn-lg" id="login"> <a href="{{ url_for('login')}}" class="loginLink">log in</a></button>
+            {% endif %}
+        </div>
+    </nav>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{category}} alert-dismissible fade show" role="alert">
+                {{ message}}.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+    <main class="col-lg">
+       <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+        <div class="offcanvas-header">
+            <h5 id="offcanvasRightLabel">Hi, {{current_user.username}}</h5>
+            <button type="button" class="btn-close text-reset closeOffcanvas" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <ul class="offcanvasActions">
+                <li class="offcanvasListElement"><a href="{{ url_for('userPage', username=current_user.username)}}" class="offcanvasLink">Profile</a></li>
+                {% if current_user.creator %}
+                <li class="offcanvasListElement"><a href="" class="offcanvasLink" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-dismiss="offcanvas">New podcast</a></li>
+                {% endif %}
+                <li class="offcanvasListElement"><a href="{{ url_for('logout')}}" class="offcanvasLink">Log out</a></li>
+            </ul>
+        </div>
+        </div>
+        {% block content %}{% endblock %}
+    </main>
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Create a new podcast</h5>
+                    <button type="button" class="btn-close closeOffcanvas" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="logInContainer">
+                        <form action="/podcast/new" method="POST" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <div class="row">
+                                    <div class="col mb-3">
+                                        <label for="title" class="form-label">Title</label>
+                                        <input type="text" id="title" class="form-control" placeholder="My Amazing Podcast" aria-label="title" name="title" minlength="3" maxlength="50" required>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <label for="description" class="form-label" aria-placeholder="Briefly describe your new podcast">Description</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col mb-3">
+                                        <textarea name="description" id="description" cols="47" rows="2" required></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="" class="form-label">Choose one or more tags for your Podcast</label>
+                                <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
+                                    <input type="checkbox" class="btn-check" id="btncheck1" autocomplete="off" name="comedy">
+                                    <label class="btn btn-outline-secondary" for="btncheck1">comedy</label>
+                                  
+                                    <input type="checkbox" class="btn-check" id="btncheck2" autocomplete="off" name="politics">
+                                    <label class="btn btn-outline-secondary" for="btncheck2">politics</label>
+                                  
+                                    <input type="checkbox" class="btn-check" id="btncheck3" autocomplete="off" name="history">
+                                    <label class="btn btn-outline-secondary" for="btncheck3">history</label>
+
+                                    <input type="checkbox" class="btn-check" id="btncheck4" autocomplete="off" name="crime">
+                                    <label class="btn btn-outline-secondary" for="btncheck4">true crime</label>
+                                  </div>
+                            </div>
+                            <div class="form-group mb-5">
+                                <label for="cover" class="form-label">Choose a cover for your podcast</label>
+                                <input type="file" class="form-control" name="cover" aria-describedby="Load an image" accept="image/png, image/gif, image/jpeg, image/jpg" >
+                            </div>
+                            <button type="submit" class="btn btn-primary" id="login">Create</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  
+    <div class="footWrap ">  
+    <footer>This website was made by Lorenzo Steno for the course of introduction to web apps.</footer>
+    </div> 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>   
+</body>
+</html>

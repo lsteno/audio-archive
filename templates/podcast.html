@@ -1,0 +1,404 @@
+{% extends "base.html" %}
+{% block title %}{{pod.title}}{% endblock %}
+{% block css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/podcast.css') }}">{% endblock %}
+{% block js %}<script defer src="{{ url_for('static', filename='javascript/podcast.js') }}"></script> {% endblock %}
+{% block content %} 
+<section class="topContainer">
+    <div class="imgWrap">
+        <img src="{{ url_for('static', filename=pod.cover) }}" alt="logo del podcast" class="podcastLogo">
+    </div>
+    <div class="descriptionWrap">
+        <div class="topWrap">
+        <h1 class="title" id="podcastTitle">{{pod.title}}</h1>
+        {% if current_user.creator and current_user.username == pod.creator %}
+        <div class="podMenu">
+            <form action="{{ url_for('deletePodcast', id=pod.id) }}" method="POST" id="deletePodcast" class="deleteForm">
+                <button class="dotMenuButton" type="submit" value="" id="btnDeletePodcast" name="btnDeletePodcast">
+                <svg class="dotMenuElement" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+                width="30" height="30"
+                viewBox="0,0,256,256">
+                <g fill="#ffffff" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none"><g transform="scale(8.53333,8.53333)"><path d="M13,3c-0.26757,-0.00363 -0.52543,0.10012 -0.71593,0.28805c-0.1905,0.18793 -0.29774,0.44436 -0.29774,0.71195h-5.98633c-0.36064,-0.0051 -0.69608,0.18438 -0.87789,0.49587c-0.18181,0.3115 -0.18181,0.69676 0,1.00825c0.18181,0.3115 0.51725,0.50097 0.87789,0.49587h18c0.36064,0.0051 0.69608,-0.18438 0.87789,-0.49587c0.18181,-0.3115 0.18181,-0.69676 0,-1.00825c-0.18181,-0.3115 -0.51725,-0.50097 -0.87789,-0.49587h-5.98633c0,-0.26759 -0.10724,-0.52403 -0.29774,-0.71195c-0.1905,-0.18793 -0.44836,-0.29168 -0.71593,-0.28805zM6,8v16c0,1.105 0.895,2 2,2h14c1.105,0 2,-0.895 2,-2v-16zM12,13c0.25575,0 0.51153,0.09747 0.70703,0.29297l2.29297,2.29297l2.29297,-2.29297c0.391,-0.391 1.02306,-0.391 1.41406,0c0.391,0.391 0.391,1.02306 0,1.41406l-2.29297,2.29297l2.29297,2.29297c0.391,0.391 0.391,1.02306 0,1.41406c-0.195,0.195 -0.45103,0.29297 -0.70703,0.29297c-0.256,0 -0.51203,-0.09797 -0.70703,-0.29297l-2.29297,-2.29297l-2.29297,2.29297c-0.195,0.195 -0.45103,0.29297 -0.70703,0.29297c-0.256,0 -0.51203,-0.09797 -0.70703,-0.29297c-0.391,-0.391 -0.391,-1.02306 0,-1.41406l2.29297,-2.29297l-2.29297,-2.29297c-0.391,-0.391 -0.391,-1.02306 0,-1.41406c0.1955,-0.1955 0.45128,-0.29297 0.70703,-0.29297z"></path></g></g>
+                </svg>
+                </button>
+            </form>
+
+            <button class="dotMenuButton" data-bs-toggle="modal" data-bs-target="#exampleModal3">
+            <svg class="dotMenuElement" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+            width="30" height="30"
+            viewBox="0,0,256,256">
+            <g fill="#ffffff" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none"><g transform="scale(8.53333,8.53333)"><path d="M22.82813,3c-0.51175,0 -1.02356,0.19544 -1.41406,0.58594l-1.41406,1.41406l5,5l1.41406,-1.41406c0.781,-0.781 0.781,-2.04713 0,-2.82812l-2.17187,-2.17187c-0.3905,-0.3905 -0.90231,-0.58594 -1.41406,-0.58594zM18,7l-12,12l1.5,0.5l0.5,2.5l2.5,0.5l0.5,1.5l12,-12zM4.15234,23.15234l-1.11523,3.15625c-0.02481,0.06075 -0.03742,0.12579 -0.03711,0.19141c0,0.27614 0.22386,0.5 0.5,0.5c0.06208,0.00031 0.12368,-0.01095 0.18164,-0.0332l3.16602,-1.11914z"></path></g></g>
+            </svg>
+            </button>
+        </div>
+
+        <div class="modal fade" id="exampleModal3" tabindex="-1" aria-labelledby="exampleModalLabel3" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel3">Modify your podcast</h5>
+                        <button type="button" class="btn-close closeOffcanvas" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="logInContainer">
+                            <form action="{{url_for('updatePodcast', id = pod.id)}}" method="POST" enctype="multipart/form-data">
+                                <div class="mb-3">
+                                    <div class="row">
+                                        <div class="col mb-3">
+                                            <label for="title" class="form-label">Change the title</label>
+                                            <input type="text" id="modifyTitle" class="form-control" placeholder="My Amazing Podcast" aria-label="title" name="title" minlength="3" maxlength="30" value="{{pod.title}}" required>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <label for="description" class="form-label" aria-placeholder="Briefly describe your new podcast">Change the description</label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col mb-3">
+                                            <textarea name="description" id="modifyDescription" cols="47" rows="2" required>{{pod.description}}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="" class="form-label">Choose one or more tags for your Podcast</label>
+                                    <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
+                                        <input type="checkbox" class="btn-check" id="btncheck1" autocomplete="off" name="comedy">
+                                        <label class="btn btn-outline-secondary" for="btncheck1">comedy</label>
+                                        
+                                        <input type="checkbox" class="btn-check" id="btncheck2" autocomplete="off" name="politics">
+                                        <label class="btn btn-outline-secondary" for="btncheck2">politics</label>
+                                        
+                                        <input type="checkbox" class="btn-check" id="btncheck3" autocomplete="off" name="history">
+                                        <label class="btn btn-outline-secondary" for="btncheck3">history</label>
+    
+                                        <input type="checkbox" class="btn-check" id="btncheck4" autocomplete="off" name="crime">
+                                        <label class="btn btn-outline-secondary" for="btncheck4">true crime</label>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-5">
+                                    <label for="cover" class="form-label">Change the cover for your podcast</label>
+                                    <input type="file" class="form-control" name="cover" aria-describedby="Load an image" accept="image/png, image/gif, image/jpeg, image/jpg">
+                                </div>
+                                <button type="submit" class="btn btn-primary" id="login">Update changes</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    
+        <div class="searchForm">
+            <input type="search" placeholder="search" class="searchBar" id="searchbox" oninput="liveSearch()">
+            <button type="submit" class="search">
+                <svg class="searchIcon" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+                width="50" height="50"
+                viewBox="0,0,256,256">
+                <g fill="#ffffff" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none"><g transform="scale(5.12,5.12)"><path d="M21,3c-9.39844,0 -17,7.60156 -17,17c0,9.39844 7.60156,17 17,17c3.35547,0 6.46094,-0.98437 9.09375,-2.65625l12.28125,12.28125l4.25,-4.25l-12.125,-12.09375c2.17969,-2.85937 3.5,-6.40234 3.5,-10.28125c0,-9.39844 -7.60156,-17 -17,-17zM21,7c7.19922,0 13,5.80078 13,13c0,7.19922 -5.80078,13 -13,13c-7.19922,0 -13,-5.80078 -13,-13c0,-7.19922 5.80078,-13 13,-13z"></path></g></g>
+                </svg>
+            </button>
+        </div>
+    </div>
+        <h2 class="author">{{pod.creator}}</h2>
+        <audio src=""></audio>
+        <p class="description" id="podcastDescription">{{pod.description}}</p>
+        {% if current_user.is_authenticated %}
+        <form action="/podcast/{{pod.id}}" method="POST" id="btnFollowWrap">
+            <button class="btn follow" type="submit" name="btnFollow" value="{{followValue}}" id="btnFollow">{{followValue}}</button>
+        </form>
+        {% endif %}
+        <div class="tagsWrap">
+            {% if tags[0]['comedy'] %}
+            <div class="tagStyle">
+                <a class="tagName" id="tagComedy" href="{{ url_for('explore', tag='comedy') }}">comedy</a>
+            </div>
+            {% endif %}
+            {% if tags[0]['politics'] %}
+            <div class="tagStyle">
+                <a class="tagName" id="tagPolitics" href="{{ url_for('explore', tag='politics') }}">politics</a>
+            </div>
+            {% endif %}
+            {% if tags[0]['history'] %}
+            <div class="tagStyle">
+                <a class="tagName" id="tagHistory" href="{{ url_for('explore', tag='history') }}">history</a>
+            </div>
+            {% endif %}
+            {% if tags[0]['crime'] %}
+            <div class="tagStyle">
+                <a class="tagName" id="tagCrime" href="{{ url_for('explore', tag='crime') }}">true crime</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+<section class="allEpisodes">
+    <div class="episodeContainer" id="myUL">
+        {% if current_user.creator and current_user.username == pod.creator %}
+        <div class="newEpisode newEpisodeWrap" data-bs-toggle="modal" data-bs-target="#exampleModal2">
+            <div class="newPodContainer">
+                <svg class="addNew" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+                width="50" height="50"
+                viewBox="0,0,256,256">
+                <g fill="#ffffff" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none"><g transform="scale(5.12,5.12)"><path d="M41,4h-32c-2.76,0 -5,2.24 -5,5v32c0,2.76 2.24,5 5,5h32c2.76,0 5,-2.24 5,-5v-32c0,-2.76 -2.24,-5 -5,-5zM37,26h-11v11h-2v-11h-11v-2h11v-11h2v11h11z"></path></g></g>
+                </svg>
+                <h5 class="episodeTitle">add a new episode</h5> 
+            </div>
+        </div>
+        <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Add an episode to your podcast</h5>
+                        <button type="button" class="btn-close closeOffcanvas" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="logInContainer">
+                            <form action="/podcast/{{pod.id}}" method="POST" enctype="multipart/form-data">
+                                <div class="mb-3">
+                                    <div class="row">
+                                        <div class="col mb-3">
+                                            <label for="title" class="form-label">Title</label>
+                                            <input type="text" id="title" class="form-control" placeholder="My Amazing Episode" aria-label="title" name="title" minlength="3" maxlength="90" required>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <label for="description" class="form-label" aria-placeholder="">Description</label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col mb-3">
+                                            <textarea name="description" id="description" cols="47" rows="2" placeholder="Briefly describe your new podcast" maxlength="900" required></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="row">
+                                        <div class="col">
+                                    <label for="date" class="form-label">Select the date of your episode</label>
+                                </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                    <input type="date" name="date" class="date active" required>
+                                </div>
+                                </div>
+                                </div>
+                                <div class="form-group mb-5">
+                                    <label for="audio" class="form-label">Upload the audio of your podcast</label>
+                                    <input type="file" class="form-control" name="audio" accept="audio/mp3" aria-describedby="Load an image" required>
+                                    <div id="fileHelp" class="form-text">This website currently supports only mp3 files</div>
+                                </div>
+                                <button type="submit" class="btn submitNewEpisode" id="login submitNewEpisode" value="submitNewEpisode">Post</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% for ep in episodes%}
+        <div class="episode">
+            <div class="episodeLeftContainer">
+                <h4 class="episodeTitle">{{ep.title}}</h4> 
+                <p class="date">{{ep.date}}</p>
+                
+                {% if current_user.creator and current_user.username == pod.creator %}
+                <div class="dotMenu">
+                    <form action="" action="/podcast/{{pod.id}}" method="POST" id="deleteForm" class="deleteForm">
+                        <button class="dotMenuButton" type="submit" value="{{ep.id}}" id="dotMenuDelete" name="dotMenuDelete">
+                        <svg class="dotMenuElement" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+                        width="30" height="30"
+                        viewBox="0,0,256,256">
+                        <g fill="#ffffff" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none"><g transform="scale(8.53333,8.53333)"><path d="M13,3c-0.26757,-0.00363 -0.52543,0.10012 -0.71593,0.28805c-0.1905,0.18793 -0.29774,0.44436 -0.29774,0.71195h-5.98633c-0.36064,-0.0051 -0.69608,0.18438 -0.87789,0.49587c-0.18181,0.3115 -0.18181,0.69676 0,1.00825c0.18181,0.3115 0.51725,0.50097 0.87789,0.49587h18c0.36064,0.0051 0.69608,-0.18438 0.87789,-0.49587c0.18181,-0.3115 0.18181,-0.69676 0,-1.00825c-0.18181,-0.3115 -0.51725,-0.50097 -0.87789,-0.49587h-5.98633c0,-0.26759 -0.10724,-0.52403 -0.29774,-0.71195c-0.1905,-0.18793 -0.44836,-0.29168 -0.71593,-0.28805zM6,8v16c0,1.105 0.895,2 2,2h14c1.105,0 2,-0.895 2,-2v-16zM12,13c0.25575,0 0.51153,0.09747 0.70703,0.29297l2.29297,2.29297l2.29297,-2.29297c0.391,-0.391 1.02306,-0.391 1.41406,0c0.391,0.391 0.391,1.02306 0,1.41406l-2.29297,2.29297l2.29297,2.29297c0.391,0.391 0.391,1.02306 0,1.41406c-0.195,0.195 -0.45103,0.29297 -0.70703,0.29297c-0.256,0 -0.51203,-0.09797 -0.70703,-0.29297l-2.29297,-2.29297l-2.29297,2.29297c-0.195,0.195 -0.45103,0.29297 -0.70703,0.29297c-0.256,0 -0.51203,-0.09797 -0.70703,-0.29297c-0.391,-0.391 -0.391,-1.02306 0,-1.41406l2.29297,-2.29297l-2.29297,-2.29297c-0.391,-0.391 -0.391,-1.02306 0,-1.41406c0.1955,-0.1955 0.45128,-0.29297 0.70703,-0.29297z"></path></g></g>
+                        </svg>
+                        </button>
+                    </form>
+
+                    <button class="dotMenuButton" data-bs-toggle="modal" data-bs-target="#exampleModalEpisode{{ep.id}}">
+                        <svg class="dotMenuElement" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+                        width="30" height="30"
+                        viewBox="0,0,256,256">
+                        <g fill="#ffffff" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none"><g transform="scale(8.53333,8.53333)"><path d="M22.82813,3c-0.51175,0 -1.02356,0.19544 -1.41406,0.58594l-1.41406,1.41406l5,5l1.41406,-1.41406c0.781,-0.781 0.781,-2.04713 0,-2.82812l-2.17187,-2.17187c-0.3905,-0.3905 -0.90231,-0.58594 -1.41406,-0.58594zM18,7l-12,12l1.5,0.5l0.5,2.5l2.5,0.5l0.5,1.5l12,-12zM4.15234,23.15234l-1.11523,3.15625c-0.02481,0.06075 -0.03742,0.12579 -0.03711,0.19141c0,0.27614 0.22386,0.5 0.5,0.5c0.06208,0.00031 0.12368,-0.01095 0.18164,-0.0332l3.16602,-1.11914z"></path></g></g>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="modal fade" id="exampleModalEpisode{{ep.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Modify {{ep.title}}</h5>
+                                <button type="button" class="btn-close closeOffcanvas" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="logInContainer">
+                                    <form action="{{url_for('updateEpisode', id=ep.id)}}" method="POST" enctype="multipart/form-data">
+                                        <div class="mb-3">
+                                            <div class="row">
+                                                <div class="col mb-3">
+                                                    <label for="title" class="form-label">Title</label>
+                                                    <input type="text" id="title" class="form-control" value="{{ep.title}}" aria-label="title" name="title" minlength="3" maxlength="50" required>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <label for="description" class="form-label" aria-placeholder="">Description</label>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col mb-3">
+                                                    <textarea name="description" id="description" cols="47" rows="2"  maxlength="900" required>{{ep.description}}</textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="row">
+                                                <div class="col">
+                                            <label for="date" class="form-label">Select the date of your episode</label>
+                                        </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col">
+                                            <input type="date" name="date" class="date active" value="{{ep.date}}" required>
+                                        </div>
+                                        </div>
+                                        </div>
+                                        <div class="form-group mb-3">
+                                            <div id="fileHelp" class="form-text">We don't currently support the update of episodes audio files, if you wish to do that we suggest deleting and re-uploading</div>
+                                        </div>
+                                        <button type="submit" class="btn submitNewEpisode" id="login submitNewEpisode" value="submitNewEpisode">Update changes</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            <div class="episodeRightContainer">
+                <div class="playWhiteBg">
+                    <button class="play-button" aria-roledescription="epSelector{{ep.id}}">
+                        <svg class="playIcon" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+                        width="64" height="64"
+                        viewBox="0,0,256,256">
+                        <g fill="#9f73ab" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none"><g transform="scale(4,4)"><path d="M32,6c-14.359,0 -26,11.641 -26,26c0,14.359 11.641,26 26,26c14.359,0 26,-11.641 26,-26c0,-14.359 -11.641,-26 -26,-26zM24,45v-26l20,13z"></path></g></g>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="expandDescription">
+                <p class="episodeDescription">
+                    {{ep.description}}
+                </p>
+                <h6 class="commentsButton" aria-roledescription="{{ep.id}}">show comments</h6> 
+                <div class="commentNum">
+                    {% set count = namespace(value=0) %}
+                    {% for i in comments %}
+                    {% if i.episode|string == ep.id|string %}
+                      {% set count.value = count.value + 1 %}
+                    {% endif %}
+                    {% endfor %}
+                    {{count.value}}
+                </div>
+                <div class="sComments{{ep.id}} sCommentsWrap">
+                    {% if current_user.is_authenticated %}
+                    <form action="{{ url_for('newComment', id=ep.id) }}" method="post">
+                        <div class="row mb-4 mt-4">
+                            <div class="col-8">
+                                <textarea class="form-control" id="commentText" name="text" rows="1" placeholder="Your amazing comment goes here" maxlength="500" required></textarea>
+                            </div>
+                            <div class="col-4">
+                                <button type="submit" class="btn btn-primary" id="cSubmit">Post</button>
+                            </div>
+                        </div>
+                    </form>
+                    {% endif %}
+                {% if comments %}         
+                    {% for comment in comments %}
+                    {% if comment.episode|string == ep.id|string %}    
+                        <div class="row">
+                            <div class="col-4 commentColumn">
+                                <h4 class="userComment">{{ comment.username }}</h4>
+                                {% if current_user.username == comment.username %}
+                                <div class="commentMenu">
+                                    <form action="{{ url_for('deleteComment', id=comment.id) }}" method="POST" id="deletePodcast" class="deleteForm">
+                                        <button class="dotMenuButton" type="submit" value="" id="btnDeletePodcast" name="btnDeletePodcast">
+                                        <svg class="commentMenuElement" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+                                        width="30" height="30"
+                                        viewBox="0,0,256,256">
+                                        <g fill="#ffffff" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none"><g transform="scale(8.53333,8.53333)"><path d="M13,3c-0.26757,-0.00363 -0.52543,0.10012 -0.71593,0.28805c-0.1905,0.18793 -0.29774,0.44436 -0.29774,0.71195h-5.98633c-0.36064,-0.0051 -0.69608,0.18438 -0.87789,0.49587c-0.18181,0.3115 -0.18181,0.69676 0,1.00825c0.18181,0.3115 0.51725,0.50097 0.87789,0.49587h18c0.36064,0.0051 0.69608,-0.18438 0.87789,-0.49587c0.18181,-0.3115 0.18181,-0.69676 0,-1.00825c-0.18181,-0.3115 -0.51725,-0.50097 -0.87789,-0.49587h-5.98633c0,-0.26759 -0.10724,-0.52403 -0.29774,-0.71195c-0.1905,-0.18793 -0.44836,-0.29168 -0.71593,-0.28805zM6,8v16c0,1.105 0.895,2 2,2h14c1.105,0 2,-0.895 2,-2v-16zM12,13c0.25575,0 0.51153,0.09747 0.70703,0.29297l2.29297,2.29297l2.29297,-2.29297c0.391,-0.391 1.02306,-0.391 1.41406,0c0.391,0.391 0.391,1.02306 0,1.41406l-2.29297,2.29297l2.29297,2.29297c0.391,0.391 0.391,1.02306 0,1.41406c-0.195,0.195 -0.45103,0.29297 -0.70703,0.29297c-0.256,0 -0.51203,-0.09797 -0.70703,-0.29297l-2.29297,-2.29297l-2.29297,2.29297c-0.195,0.195 -0.45103,0.29297 -0.70703,0.29297c-0.256,0 -0.51203,-0.09797 -0.70703,-0.29297c-0.391,-0.391 -0.391,-1.02306 0,-1.41406l2.29297,-2.29297l-2.29297,-2.29297c-0.391,-0.391 -0.391,-1.02306 0,-1.41406c0.1955,-0.1955 0.45128,-0.29297 0.70703,-0.29297z"></path></g></g>
+                                        </svg>
+                                        </button>
+                                    </form>                   
+
+                                    <button class="dotMenuButton" data-bs-toggle="modal" data-bs-target="#exampleModalComment{{comment.id}}">
+                                    <svg class="commentMenuElement" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+                                    width="30" height="30"
+                                    viewBox="0,0,256,256">
+                                    <g fill="#ffffff" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none"><g transform="scale(8.53333,8.53333)"><path d="M22.82813,3c-0.51175,0 -1.02356,0.19544 -1.41406,0.58594l-1.41406,1.41406l5,5l1.41406,-1.41406c0.781,-0.781 0.781,-2.04713 0,-2.82812l-2.17187,-2.17187c-0.3905,-0.3905 -0.90231,-0.58594 -1.41406,-0.58594zM18,7l-12,12l1.5,0.5l0.5,2.5l2.5,0.5l0.5,1.5l12,-12zM4.15234,23.15234l-1.11523,3.15625c-0.02481,0.06075 -0.03742,0.12579 -0.03711,0.19141c0,0.27614 0.22386,0.5 0.5,0.5c0.06208,0.00031 0.12368,-0.01095 0.18164,-0.0332l3.16602,-1.11914z"></path></g></g>
+                                    </svg>
+                                    </button>
+
+                                    <div class="modal fade" id="exampleModalComment{{comment.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Modify your comment</h5>
+                                                    <button type="button" class="btn-close closeOffcanvas" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="logInContainer">
+                                                        <form action="{{url_for('updateComment', id=comment.id, podId = pod.id)}}" method="POST" enctype="multipart/form-data">
+                                                            <div class="mb-3">
+                                                                <div class="row">
+                                                                    <div class="col mb-3">
+                                                                        <textarea name="commentText" id="commentText" cols="47" rows="2"  maxlength="900" required>{{comment.text}}</textarea>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <button type="submit" class="btn submitNewEpisode" id="login submitNewEpisode" value="submitNewEpisode">Update changes</button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                        {% endif %}
+                                <p class="comment">{{ comment.text }}</p>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% endfor %}
+                {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% if current_user.is_authenticated %}
+{% for ep in episodes%}
+<div class="playBar chrome epSelector{{ep.id}}">
+    <figure>
+        <audio
+        id=""
+        class="audioBar"
+        controls
+        src="{{ url_for('static', filename=ep.audio) }}">
+        <a href="{{ url_for('static', filename=ep.audio) }}" class="audioBarLink"></a>
+        </audio>
+    </figure>
+    <button class="closePlayBar" aria-roledescription="">
+        <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+        width="50" height="50"
+        viewBox="0,0,256,256"
+        class="closeIcon">
+        <g fill="#ffffff" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none"><g transform="scale(5.12,5.12)"><path d="M41,4h-32c-2.76,0 -5,2.24 -5,5v32c0,2.76 2.24,5 5,5h32c2.76,0 5,-2.24 5,-5v-32c0,-2.76 -2.24,-5 -5,-5zM34.71,33.29l-1.42,1.42l-8.29,-8.29l-8.29,8.29l-1.42,-1.42l8.29,-8.29l-8.29,-8.29l1.42,-1.42l8.29,8.29l8.29,-8.29l1.42,1.42l-8.29,8.29z"></path></g></g>
+        </svg>
+    </button>
+</div>
+{% endfor %}  
+{% endif %}  
+{% endblock %}

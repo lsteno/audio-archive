@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}home{% endblock %} 
+{% block content %} 
+{% if not current_user.is_authenticated %}
+<section class="bannerSection">
+  <a class="landingBannerWrap" href="{{url_for('signup')}}">
+    <img src="{{ url_for('static', filename='landing.png') }}" alt="landing Banner" class="landingBanner">
+  </a>
+</section>
+{% endif %}
+<section class="topSection">
+  <div class="weekly-top">
+        <h2>Handpicked by the Staff</h2>
+<div class="carouselContainer">
+<div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+      <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+      <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
+      <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
+    </div>
+    <div class="carousel-inner">
+      <a class="carousel-item active" id="muschioLink" href="{{url_for('podcast', id=14)}}">
+        <img class="d-block w-100 bgPic" src="{{ url_for('static', filename='/podcastsimgs/muschio selvaggiocover.jpg') }}" alt="First slide">
+        <div class="carousel-caption d-none d-md-block">
+          <h5>Muschio Selvaggio</h5>
+        </div>
+      </a>
+      <a class="carousel-item" id="zanzaraLink" href="{{url_for('podcast', id=13)}}">
+        <img class="d-block w-100 bgPic" src="{{ url_for('static', filename='/podcastsimgs/la zanzaracover.jpg') }}" alt="Second slide">
+        <div class="carousel-caption d-none d-md-block">
+          <h5>La Zanzara</h5>
+        </div>
+      </a>
+      <a class="carousel-item"  id="joeLink" href="{{url_for('podcast', id=15)}}">
+        <img class="d-block w-100 bgPic" src="{{ url_for('static', filename='/podcastsimgs/velenocover.jpg') }}" alt="Third slide">
+        <div class="carousel-caption d-none d-md-block">
+          <h5>Veleno</h5>
+        </div>
+      </a>
+    </div>
+
+  </div>
+</div>
+
+</div>
+</section>
+<section class="pt-5 pb-3 categoriesSection">
+<div class="row">
+    <div class="col-12 categoriesTitle">
+        <h2>Browse for category</h2>
+    </div>
+</div>
+<div class="row categories">
+    <a class="col-3 categoryWrap" href="{{url_for('explore', tag='comedy')}}">
+        <div class="category" id="comedy">
+            comedy
+        </div>
+    </a>
+    <a class="col-3 categoryWrap" href="{{url_for('explore', tag='politics')}}">
+        <div class="category" id="politics">
+            politics
+        </div>      
+    </a>
+    <a class="col-3 categoryWrap" href="{{url_for('explore', tag='history')}}">
+        <div class="category" id="history">
+            history
+        </div>        
+    </a>
+    <a class="col-3 categoryWrap" href="{{url_for('explore', tag='crime')}}">
+        <div class="category" id="crime">
+            True crime
+        </div>       
+    </a>
+</div>
+</section>
+{% endblock %}
